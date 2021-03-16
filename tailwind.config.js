@@ -12,5 +12,16 @@ module.exports = {
   important: false,
   separator: ":",
   corePlugins: {},
-  plugins: [require("tailwindcss-filters"), require("@tailwindcss/forms")],
+  theme: {
+    fontFamily: {
+      sans: ["Nunito", "sans-serif"],
+      serif: ["Maitree", "serif"],
+    },
+  },
+  plugins: [
+    require("tailwindcss-css-filters"),
+    require("tailwindcss-blend-mode")(),
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
+  ],
 }

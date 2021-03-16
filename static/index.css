@@ -1,4 +1,5 @@
 @import url("https://use.typekit.net/rcn0owy.css");
+@import url("https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@100;300&family=Maitree:wght@200;300;400&family=Nunito&display=swap");
 
 @tailwind base;
 
@@ -12,4 +13,10 @@
 
 .touch-action-none {
   touch-action: none;
+}
+
+.bg {
+  background-image: url("./bg/1.jpg");
+  background-size: cover;
+  background-position: 50% 50%;
 }

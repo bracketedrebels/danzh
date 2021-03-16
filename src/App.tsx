@@ -10,10 +10,7 @@ export default (
   props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ) => (
   <div {...props}>
-    <div className="absolute inset-0 flex items-stretch justify-stretch bg-surface transition-all duration-200">
-      <div className="absolute inset-0 pointer-events-none neu-convex" />
-      <div className="absolute inset-0 bg-repeat-round opacity-25 pointer-events-none" />
-
+    <div className="absolute inset-0 flex items-stretch justify-stretch bg-black bg-opacity-5 transition-all duration-200">
       <BrowserRouter basename={process.env.ROUTING_BASENAME}>
         <Suspense fallback={<div className="m-auto text-shadow">Loading</div>}>
           <Switch>

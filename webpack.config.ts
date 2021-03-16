@@ -31,7 +31,7 @@ const rule = (
 const config = (
   ...args: Array<(env: Required<Environment>, config: Configuration) => Configuration>
 ) => ({
-  environment = "dev",
+  environment = "local",
   output = "dist",
   basename = "/",
   bundlename = "bundle.js",
@@ -55,8 +55,8 @@ const config = (
         hot: true,
       },
       optimization: {
-        usedExports: environment !== "dev",
-        minimize: environment !== "dev",
+        usedExports: environment !== "local",
+        minimize: environment !== "local",
       },
       output: {
         path: path.resolve(__dirname, output),
@@ -110,7 +110,7 @@ const tsxLoader = () => (env: Environment) =>
           "relay",
           "const-enum",
           ["@babel/plugin-transform-typescript", { allowNamespaces: true }],
-          ...(env.environment === "dev" ? [require.resolve("react-refresh/babel")] : []),
+          ...(env.environment === "local" ? [require.resolve("react-refresh/babel")] : []),
         ],
       },
     },
@@ -197,7 +197,7 @@ const prepareAllTheStaticResources = () => ({
   ])
 
 type Environment = {
-  environment?: "dev" | "prod"
+  environment?: "local" | "prod"
   output?: string
   bundlename?: string
   basename?: string
