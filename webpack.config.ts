@@ -7,84 +7,20 @@ import CopyPlugin from "copy-webpack-plugin"
 import postcss from "postcss"
 import handlebars from "handlebars"
 import purgecss from "@fullhuman/postcss-purgecss"
-import dotenv from "dotenv-webpack"
 
-import { Configuration, DefinePlugin } from "webpack"
-
-/* helpers definitions */
-
-const rule = (
-  v: (
-    env: Environment
-  ) => (
-    acc: Required<Required<Configuration>["module"]>["rules"]
-  ) => Required<Required<Configuration>["module"]>["rules"]
-) => (env: Environment, conf: Configuration) =>
-  ({
-    ...conf,
-    module: {
-      ...(conf.module || {}),
-      rules: v(env)(conf.module?.rules || []),
-    },
-  } as Configuration)
-
-const config = (
-  ...args: Array<(env: Required<Environment>, config: Configuration) => Configuration>
-) => ({
-  environment = "local",
-  output = "dist",
-  basename = "/",
-  bundlename = "bundle.js",
-}: Environment) =>
-  args.reduce(
-    (acc, v) =>
-      v(
-        {
-          environment,
-          output: path.resolve(__dirname, output),
-          basename,
-          bundlename,
-        },
-        acc
-      ),
-    {
-      entry: ["./src/index.tsx"],
-      devServer: {
-        historyApiFallback: true,
-        compress: true,
-        hot: true,
-      },
-      optimization: {
-        usedExports: environment !== "local",
-        minimize: environment !== "local",
-      },
-      output: {
-        path: path.resolve(__dirname, output),
-        filename: bundlename,
-      },
-      resolve: {
-        extensions: [".js", ".ts", ".tsx"],
-      },
-    } as Configuration
-  )
-
-const plugin = (
-  v: (
-    env: Required<Environment>
-  ) => (conf: Required<Configuration>["plugins"]) => Required<Configuration>["plugins"]
-) => (env: Required<Environment>, conf: Configuration) =>
-  ({
-    ...conf,
-    plugins: v(env)(conf.plugins || []),
-  } as Configuration)
+import { DefinePlugin } from "webpack"
+import { config, envvars, plugin, rule } from "./.webpack/helpers"
 
 const forceTypeChecking = () => () => append(new ForkTsCheckerWebpackPlugin())
-const defineRuntimeEnvironment = () => ({ environment }: Required<Environment>) => {
-  return append(new dotenv({ path: `.env.${environment}` }))
-}
+const defineRuntimeEnvironment = () => (env: "local" | "prod") =>
+  append(
+    new DefinePlugin({
+      "process.env": envvars(env),
+    })
+  )
 
-const enableHMRForDevelopment = () => ({ environment }: Environment) =>
-  environment === "prod" ? identity : append(new ReactRefreshWebpackPlugin())
+// const enableHMRForDevelopment = () => (env: "local" | "prod") =>
+//   env === "prod" ? identity : append(new ReactRefreshWebpackPlugin())
 
 const workerLoader = () => () =>
   append({
@@ -94,7 +30,7 @@ const workerLoader = () => () =>
     },
   })
 
-const tsxLoader = () => (env: Environment) =>
+const tsxLoader = () => (env: "local" | "prod") =>
   append({
     test: /\.ts(x)?$/,
     exclude: /node_modules/,
@@ -110,7 +46,7 @@ const tsxLoader = () => (env: Environment) =>
           "relay",
           "const-enum",
           ["@babel/plugin-transform-typescript", { allowNamespaces: true }],
-          ...(env.environment === "local" ? [require.resolve("react-refresh/babel")] : []),
+          ...(env === "local" ? [require.resolve("react-refresh/babel")] : []),
         ],
       },
     },
@@ -128,25 +64,21 @@ const jsLoader = () => () =>
 /**
  * @todo
  */
-const prepareAllTheStaticResources = () => ({
-  output,
-  environment,
-  basename,
-  bundlename,
-}: Environment) =>
-  concat([
+const prepareAllTheStaticResources = () => (env: "local" | "prod") => {
+  const { DEPLOY_BASENAME, DEPLOY_OUTPUT, DEPLOY_BUNDLENAME } = envvars(env)
+  return concat([
     new CopyPlugin({
       patterns: [
         {
           from: "static/index.css",
-          to: `${output}${sep}index.css`,
+          to: `index.css`,
           transform: {
             transformer: (content: Buffer) =>
               postcss([
                 require("postcss-import"),
                 require("tailwindcss"),
                 require("autoprefixer"),
-                ...(environment === "prod"
+                ...(env === "prod"
                   ? [
                       purgecss({
                         content: ["./src/**/*.tsx", "./static/**/*.html"],
@@ -163,7 +95,7 @@ const prepareAllTheStaticResources = () => ({
               ])
                 .process(content, {
                   from: `static${sep}index.css`,
-                  to: `${output}${sep}index.css`,
+                  to: `index.css`,
                 })
                 .then((v) => v.css),
             cache: true,
@@ -171,36 +103,33 @@ const prepareAllTheStaticResources = () => ({
         },
         {
           from: `static${sep}index.html`,
-          to: `${output}${sep}index.html`,
+          to: `index.html`,
           transform: {
             transformer: (content: Buffer) =>
-              handlebars.compile(content.toString())({ basename, bundlename }),
+              handlebars.compile(content.toString())({
+                basename: DEPLOY_BASENAME,
+                bundlename: DEPLOY_BUNDLENAME,
+              }),
             cache: true,
           } as any,
         },
-        ...(environment === "prod"
+        ...(env === "prod"
           ? [
               {
                 from: `static${sep}index.html`,
-                to: `${output}${sep}404.html`,
+                to: `404.html`,
                 transform: (content: Buffer) =>
                   handlebars.compile(content.toString())({
-                    basename,
-                    bundlename,
+                    basename: DEPLOY_BASENAME,
+                    bundlename: DEPLOY_BUNDLENAME,
                   }),
               },
             ]
           : []),
-        { from: "static", to: output },
+        { from: "static", to: "." },
       ],
     }),
   ])
-
-type Environment = {
-  environment?: "local" | "prod"
-  output?: string
-  bundlename?: string
-  basename?: string
 }
 
 /* actual configuration */
@@ -208,9 +137,27 @@ type Environment = {
 export default config(
   plugin(forceTypeChecking()),
   plugin(defineRuntimeEnvironment()),
-  plugin(enableHMRForDevelopment()),
+  // plugin(enableHMRForDevelopment()),
   plugin(prepareAllTheStaticResources()),
   rule(tsxLoader()),
   rule(workerLoader()),
   rule(jsLoader())
-)
+)((environment) => ({
+  entry: ["./src/index.tsx"],
+  devServer: {
+    historyApiFallback: true,
+    compress: true,
+    hot: true,
+  },
+  optimization: {
+    usedExports: environment === "prod",
+    minimize: environment === "prod",
+  },
+  output: {
+    path: path.resolve(__dirname, envvars(environment).DEPLOY_OUTPUT),
+    filename: envvars(environment).DEPLOY_BUNDLENAME,
+  },
+  resolve: {
+    extensions: [".js", ".ts", ".tsx"],
+  },
+}))
