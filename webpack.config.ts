@@ -1,5 +1,5 @@
 import path, { sep } from "path"
-import { append, concat, identity } from "ramda"
+import { append, concat, identity, toPairs } from "ramda"
 
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
 import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin"
@@ -15,7 +15,10 @@ const forceTypeChecking = () => () => append(new ForkTsCheckerWebpackPlugin())
 const defineRuntimeEnvironment = () => (env: "local" | "prod") =>
   append(
     new DefinePlugin({
-      "process.env": envvars(env),
+      "process.env": toPairs(envvars(env)).reduce(
+        (acc, [key, value]) => ({ ...acc, [key]: JSON.stringify(value) }),
+        {}
+      ),
     })
   )
 
