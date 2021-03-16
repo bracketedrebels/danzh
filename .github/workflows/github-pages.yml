@@ -21,7 +21,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: dependencies installation
-        run: npm i
+        run:
+          - npm config list
+          - npm config set '@streamlinehq:registry' https://npm.cloudsmith.io/streamlinehq/streamline-icons/
+          - npm config set "//npm.cloudsmith.io/streamlinehq/streamline-icons/:_authToken" ${{ secrets.STREAMLINE_ICONS_TOKEN }}
+          - npm i
 
       - name: building production bundle
         run: npm run build-prod
