@@ -16,7 +16,5 @@
 }
 
 .bg {
-  background-image: url("./bg/1.jpg");
-  background-size: cover;
-  background-position: 50% 50%;
+  background-image: url("./bg/1.svg");
 }

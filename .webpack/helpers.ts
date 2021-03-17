@@ -29,9 +29,7 @@ export const config = (
   ...args: Array<(env: "local" | "prod", config: Configuration) => Configuration>
 ) => (initial: (env: "local" | "prod") => Configuration) => ({
   environment = "local" as "local" | "prod",
-}) => {
-  return args.reduce((acc, v) => v(environment, acc), initial(environment))
-}
+}) => args.reduce((acc, v) => v(environment, acc), initial(environment))
 
 export const plugin = (
   v: (

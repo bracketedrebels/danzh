@@ -49,7 +49,7 @@ const tsxLoader = () => (env: "local" | "prod") =>
           "relay",
           "const-enum",
           ["@babel/plugin-transform-typescript", { allowNamespaces: true }],
-          ...(env === "local" ? [require.resolve("react-refresh/babel")] : []),
+          // ...(env === "local" ? [require.resolve("react-refresh/babel")] : []),
         ],
       },
     },
@@ -68,7 +68,7 @@ const jsLoader = () => () =>
  * @todo
  */
 const prepareAllTheStaticResources = () => (env: "local" | "prod") => {
-  const { DEPLOY_BASENAME, DEPLOY_OUTPUT, DEPLOY_BUNDLENAME } = envvars(env)
+  const { DEPLOY_BASENAME, DEPLOY_BUNDLENAME } = envvars(env)
   return concat([
     new CopyPlugin({
       patterns: [
@@ -102,7 +102,7 @@ const prepareAllTheStaticResources = () => (env: "local" | "prod") => {
                 })
                 .then((v) => v.css),
             cache: true,
-          } as any,
+          },
         },
         {
           from: `static${sep}index.html`,
@@ -138,9 +138,9 @@ const prepareAllTheStaticResources = () => (env: "local" | "prod") => {
 /* actual configuration */
 
 export default config(
+  // plugin(enableHMRForDevelopment()),
   plugin(forceTypeChecking()),
   plugin(defineRuntimeEnvironment()),
-  // plugin(enableHMRForDevelopment()),
   plugin(prepareAllTheStaticResources()),
   rule(tsxLoader()),
   rule(workerLoader()),

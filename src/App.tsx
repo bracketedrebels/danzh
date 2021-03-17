@@ -12,7 +12,7 @@ export default (
   <div {...props}>
     <div className="absolute inset-0 flex items-stretch justify-stretch bg-black bg-opacity-5 transition-all duration-200">
       <BrowserRouter basename={process.env.ROUTING_BASENAME}>
-        <Suspense fallback={<div className="m-auto text-shadow">Loading</div>}>
+        <Suspense fallback={<div className="m-auto">Loading</div>}>
           <Switch>
             <Route exact path="/welcome" component={Welcome} />
             <Redirect to="/welcome" />
