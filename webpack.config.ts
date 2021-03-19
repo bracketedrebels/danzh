@@ -1,29 +1,30 @@
 import path, { sep } from "path"
-import { append, concat, identity, toPairs } from "ramda"
+import { append, concat, toPairs } from "ramda"
 
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
-import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin"
 import CopyPlugin from "copy-webpack-plugin"
 import postcss from "postcss"
 import handlebars from "handlebars"
 import purgecss from "@fullhuman/postcss-purgecss"
 
 import { DefinePlugin } from "webpack"
-import { config, envvars, plugin, rule } from "./.webpack/helpers"
+import { config, ContextualEnvironmentDescriptor, envvars, plugin, rule } from "./.webpack/helpers"
 
 const forceTypeChecking = () => () => append(new ForkTsCheckerWebpackPlugin())
-const defineRuntimeEnvironment = () => (env: "local" | "prod") =>
+const defineRuntimeEnvironment = () => (env: ContextualEnvironmentDescriptor) =>
   append(
     new DefinePlugin({
       "process.env": toPairs(envvars(env)).reduce(
-        (acc, [key, value]) => ({ ...acc, [key]: JSON.stringify(value) }),
+        (acc, [key, value]) => ({
+          ...acc,
+          [key]: JSON.stringify(
+            /^\$\{[^}{]+\}$/.test(value) ? process.env[value.slice(2, -1)] || "" : value
+          ),
+        }),
         {}
       ),
     })
   )
-
-// const enableHMRForDevelopment = () => (env: "local" | "prod") =>
-//   env === "prod" ? identity : append(new ReactRefreshWebpackPlugin())
 
 const workerLoader = () => () =>
   append({
@@ -33,7 +34,7 @@ const workerLoader = () => () =>
     },
   })
 
-const tsxLoader = () => (env: "local" | "prod") =>
+const tsxLoader = () => () =>
   append({
     test: /\.ts(x)?$/,
     exclude: /node_modules/,
@@ -49,7 +50,6 @@ const tsxLoader = () => (env: "local" | "prod") =>
           "relay",
           "const-enum",
           ["@babel/plugin-transform-typescript", { allowNamespaces: true }],
-          // ...(env === "local" ? [require.resolve("react-refresh/babel")] : []),
         ],
       },
     },
@@ -64,10 +64,7 @@ const jsLoader = () => () =>
     enforce: "pre" as const,
   })
 
-/**
- * @todo
- */
-const prepareAllTheStaticResources = () => (env: "local" | "prod") => {
+const prepareAllTheStaticResources = () => (env: ContextualEnvironmentDescriptor) => {
   const { DEPLOY_BASENAME, DEPLOY_BUNDLENAME } = envvars(env)
   return concat([
     new CopyPlugin({
@@ -138,27 +135,32 @@ const prepareAllTheStaticResources = () => (env: "local" | "prod") => {
 /* actual configuration */
 
 export default config(
-  // plugin(enableHMRForDevelopment()),
   plugin(forceTypeChecking()),
   plugin(defineRuntimeEnvironment()),
   plugin(prepareAllTheStaticResources()),
   rule(tsxLoader()),
   rule(workerLoader()),
   rule(jsLoader())
-)((environment) => ({
+)((env) => ({
   entry: ["./src/index.tsx"],
   devServer: {
     historyApiFallback: true,
     compress: true,
     hot: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
+    },
+    proxy: {},
   },
   optimization: {
-    usedExports: environment === "prod",
-    minimize: environment === "prod",
+    usedExports: env === "prod",
+    minimize: env === "prod",
   },
   output: {
-    path: path.resolve(__dirname, envvars(environment).DEPLOY_OUTPUT),
-    filename: envvars(environment).DEPLOY_BUNDLENAME,
+    path: path.resolve(__dirname, envvars(env).DEPLOY_OUTPUT),
+    filename: envvars(env).DEPLOY_BUNDLENAME,
   },
   resolve: {
     extensions: [".js", ".ts", ".tsx"],

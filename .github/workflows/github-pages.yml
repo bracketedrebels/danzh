@@ -33,7 +33,7 @@ jobs:
         run: npm i
 
       - name: building production bundle
-        run: npm run build-prod
+        run: OAUTH_CLIENT_SECRET_GITHUB=${{ secrets.STREAMLINE_ICONS_TOKEN }} npm run build-prod
 
       - name: deploying to github pages
         uses: crazy-max/ghaction-github-pages@v2.2.0

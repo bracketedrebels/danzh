@@ -14,6 +14,7 @@ export default ({ ...props }) => (
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
       ></path>
     </g>
   </svg>

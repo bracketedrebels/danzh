@@ -4,6 +4,7 @@ import { Switch, Route, BrowserRouter, Redirect } from "react-router-dom"
 const Welcome = lazy(() => import("./+welcome"))
 const Player = lazy(() => import("./+player"))
 const Master = lazy(() => import("./+master"))
+const OauthSuccessGithub = lazy(() => import("./+oauth.github"))
 // ...routing components
 
 export default (
@@ -15,6 +16,7 @@ export default (
         <Suspense fallback={<div className="m-auto">Loading</div>}>
           <Switch>
             <Route exact path="/welcome" component={Welcome} />
+            <Route exact path="/oauth/github" component={OauthSuccessGithub} />
             <Redirect to="/welcome" />
           </Switch>
         </Suspense>

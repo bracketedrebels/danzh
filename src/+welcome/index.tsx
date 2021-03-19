@@ -1,4 +1,5 @@
-import GithubIcon from "../helpers/icon/github"
+import { useCallback } from "react"
+import LoginIcon from "../helpers/icon/login"
 
 export default () => {
   //   const [name, setName] = useState(null)
@@ -28,22 +29,37 @@ export default () => {
   //     }
   //   }, [])
 
+  const onGithubLoginClick = useCallback(() => {
+    const array = new Uint32Array(8)
+    const state = crypto.getRandomValues(array).join("")
+    localStorage.setItem("oauth:pending:github", state)
+    const link = `${process.env.OAUTH_AUTHORIZATION_URL_GITHUB}?client_id=${
+      process.env.OAUTH_CLIENTID_GITHUB
+    }&state=${state}&scope=repo&redirect_uri=${encodeURI(
+      `${location.origin}${process.env.DEPLOY_BASENAME}oauth/github`
+    )}`
+    // console.log(link)
+    window.location.assign(link)
+  }, [])
+
   return (
-    <div className="fixed inset-0 flex flex-col items-stretch">
-      <div className="bg bg-no-repeat bg-cover bg-center flex flex-col items-center 2xl:items-end 2xl:pr-10 justify-center text-white flex-grow">
-        <div className="font-sans text-4xl sm:text-6xl xl:text-8xl 2xl:text-9xl filter-drop-shadow-md">
+    <div className="fixed inset-0 flex flex-col items-stretch bg bg-no-repeat bg-cover bg-center">
+      <div className="text-center flex flex-col items-center 2xl:items-end 2xl:pr-10 justify-center text-white flex-grow">
+        <div className="font-standout text-5xl sm:text-8xl 2xl:text-9xl filter-drop-shadow-md">
           DANZH
-          <div className="h-1 rounded bg-gradient-to-l bg-white" />
+          <div className="font-sans text-base sm:text-xl xl:text-2xl text-opacity-75">
+            Tabletop games state management tool
+          </div>
         </div>
-        <div className="text-sm sm:text-xl xl:text-3xl text-opacity-75 mt-3">
-          Tabletop games state management tool
+        <div
+          onClick={onGithubLoginClick}
+          className="flex-nowrap flex-row flex items-center mt-10 text-xl font-standout p-3 rounded-full bg-white text-red-900"
+        >
+          <span className="w-8 h-8 mr-1">
+            <LoginIcon />
+          </span>
+          github
         </div>
-      </div>
-      <div className="flex mx-auto 2xl:mr-6 2xl:ml-auto mt-auto mb-6 items-center">
-        <span className="text-opacity-80 text-black font-sans mr-3 text-lg">Log in:</span>
-        <button className="justify-center p-2 border border-transparent shadow-sm font-sans rounded-full text-white bg-red-900 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-          <GithubIcon className="w-8 h-8" />
-        </button>
       </div>
     </div>
   )

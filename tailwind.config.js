@@ -65,6 +65,16 @@ module.exports = {
       80: "20rem",
       96: "24rem",
     },
+    filter: {
+      none: "none",
+      grayscale: "grayscale(1)",
+      invert: "invert(1)",
+      sepia: "sepia(1)",
+    },
+    backdropFilter: {
+      none: "none",
+      blur: "blur(20px)",
+    },
     animation: {
       none: "none",
       spin: "spin 1s linear infinite",
@@ -192,6 +202,7 @@ module.exports = {
         '"Courier New"',
         "monospace",
       ],
+      standout: ["Raleway", "sans-serif"],
     },
     fontSize: {
       xs: ["0.75rem", { lineHeight: "1rem" }],
@@ -855,5 +866,5 @@ module.exports = {
     wordBreak: ["responsive"],
     zIndex: ["responsive", "focus-within", "focus"],
   },
-  plugins: [],
+  plugins: [require("tailwindcss-filters")],
 }
