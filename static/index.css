@@ -1,5 +1,5 @@
 @import url("https://use.typekit.net/rcn0owy.css");
-@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Arima+Madurai:wght@100;300&family=Maitree:wght@200;300;400&family=Nunito&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;600&family=Jost:wght@300;600&display=swap");
 
 @tailwind base;
 
@@ -7,14 +7,33 @@
 
 @tailwind utilities;
 
-* {
-  @apply select-none outline-none;
+@layer base {
+  .touch-action-none {
+    touch-action: none;
+  }
+
+  .withbg {
+    background-image: url("bg/bg.jpg");
+  }
+
+  .clip-d20 {
+    clip-path: polygon(
+      0% 50%,
+      1rem 0%,
+      calc(100% - 1rem) 0%,
+      100% 50%,
+      calc(100% - 1rem) 100%,
+      1rem 100%
+    );
+  }
 }
 
-.touch-action-none {
-  touch-action: none;
-}
+@layer components {
+  * {
+    @apply select-none outline-none leading-0;
+  }
 
-.bg {
-  background-image: url("./bg/1.svg");
+  .button-d20 {
+    @apply bg-primary text-primary-contrast clip-d20 hover:bg-primary-light focus:bg-primary-light;
+  }
 }

@@ -1,4 +1,0 @@
-/**
- * @todo: implement
- */
-export default () => {}

@@ -8,12 +8,13 @@ export type FileEnvironmentDescriptor = {
   DEPLOY_BASENAME: string
   DEPLOY_OUTPUT: string
   DEPLOY_BUNDLENAME: string
+  API_GQL_ENDPOINT: string
 
-  GITHUB_API_URL: string
-  OAUTH_AUTHORIZATION_URL_GITHUB: string
-  OAUTH_ACCESS_TOKEN_URL_GITHUB: string
-  OAUTH_CLIENTID_GITHUB: string
-  OAUTH_CLIENT_SECRET_GITHUB: string
+  // GITHUB_API_URL: string
+  // OAUTH_AUTHORIZATION_URL_GITHUB: string
+  // OAUTH_ACCESS_TOKEN_URL_GITHUB: string
+  // OAUTH_CLIENTID_GITHUB: string
+  // OAUTH_CLIENT_SECRET_GITHUB: string
 }
 
 export const envvars = (env: "local" | "prod") =>
