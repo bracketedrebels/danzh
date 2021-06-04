@@ -3,6 +3,12 @@ import { Redirect, Route, Switch, useHistory } from "react-router"
 import { BrowserRouter } from "react-router-dom"
 import LocalStorageProvider from "./helpers/storage/LocalStorageProvider"
 
+const Reception = lazy(() => import("./+reception"))
+const ReceptionCampaigns = lazy(() => import("./+reception.campaigns"))
+const ReceptionCreate = lazy(() => import("./+reception.create"))
+const Welcome = lazy(() => import("./+welcome"))
+const OAuthDiscord = lazy(() => import("./+oauth.discord"))
+
 export default (
   props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ) => {
@@ -27,13 +33,11 @@ export default (
               <BrowserRouter basename={process.env.ROUTING_BASENAME}>
                 <Suspense fallback={<div className="m-auto">Loading</div>}>
                   <Switch>
-                    <Route exact path="/reception" component={lazy(() => import("./+reception"))} />
-                    <Route exact path="/welcome" component={lazy(() => import("./+welcome"))} />
-                    <Route
-                      exact
-                      path="/oauth/discord"
-                      component={lazy(() => import("./+oauth.discord"))}
-                    />
+                    <Route exact path="/reception" component={Reception} />
+                    <Route exact path="/reception/campaigns" component={ReceptionCampaigns} />
+                    <Route exact path="/reception/create" component={ReceptionCreate} />
+                    <Route exact path="/welcome" component={Welcome} />
+                    <Route exact path="/oauth/discord" component={OAuthDiscord} />
                     <Redirect to="/welcome" />
                   </Switch>
                 </Suspense>
