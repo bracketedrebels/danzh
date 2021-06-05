@@ -8,18 +8,38 @@ export default () => {
   const gotoCreate = useCallback(() => push("/reception/create"), [push])
 
   return (
-    <div className="backdrop-blur h-full px-16 bg-surface bg-opacity-50 flex flex-col justify-center items-stretch gap-4">
-      <button className="clip-d20-h text-base py-4 px-16 whitespace-nowrap">Profile</button>
-      <SeparatorBlock />
-      <button className="clip-d20-h text-base py-4 px-16 whitespace-nowrap" onClick={gotoCreate}>
-        Create new campaign
-      </button>
-      <button className="clip-d20-h text-base py-4 px-16 whitespace-nowrap" onClick={gotoCampaigns}>
-        Your campaigns
-      </button>
-      <button className="clip-d20-h text-base py-4 px-16 whitespace-nowrap">Discover</button>
-      <SeparatorBlock />
-      <button className="clip-d20-h text-base py-4 px-16 whitespace-nowrap">Continue</button>
+    <div className="relative h-full bg-surface bg-opacity-60 flex flex-col justify-center items-stretch gap-3">
+      <div className="absolute top-0 inset-x-0 py-2 bg-surface-light bg-opacity-40 backdrop-blur px-16">
+        <span className="font-standout text-2xl">DANZH</span>
+        <span className="font-sans text-sm block text-primary-light">
+          Great day, Sir! Wanna some trpg?
+        </span>
+      </div>
+      <div className="py-32 bg-surface-light bg-opacity-40 backdrop-blur flex flex-col justify-center items-stretch gap-3 px-16">
+        <button className="clip-d20-h text-base py-4 px-16 whitespace-nowrap bg-gradient-to-r from-primary-dark via-transparent to-primary-dark">
+          Profile
+        </button>
+        <SeparatorBlock />
+        <button
+          className="clip-d20-h text-base py-4 px-16 whitespace-nowrap bg-gradient-to-r from-primary-dark via-transparent to-primary-dark"
+          onClick={gotoCreate}
+        >
+          Create new campaign
+        </button>
+        <button
+          className="clip-d20-h text-base py-4 px-16 whitespace-nowrap bg-gradient-to-r from-primary-dark via-transparent to-primary-dark"
+          onClick={gotoCampaigns}
+        >
+          Your campaigns
+        </button>
+        <button className="clip-d20-h text-base py-4 px-16 whitespace-nowrap bg-gradient-to-r from-primary-dark via-transparent to-primary-dark">
+          Discover
+        </button>
+        <SeparatorBlock />
+        <button className="clip-d20-h text-base py-4 px-16 whitespace-nowrap bg-gradient-to-r from-primary-dark via-transparent to-primary-dark">
+          Continue
+        </button>
+      </div>
     </div>
   )
 }
