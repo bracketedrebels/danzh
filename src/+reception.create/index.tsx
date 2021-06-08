@@ -1,3 +1,4 @@
+import { Transition } from "@headlessui/react"
 import { stubNull } from "ramda-adjunct"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import ButtonErrorIndicator from "../helpers/ButtonErrorIndicator"
@@ -22,55 +23,95 @@ export default () => {
   useEffect(() => setValid(!!name), [name])
 
   return (
-    <div className="h-full bg-surface bg-opacity-50 flex flex-col justify-start items-stretch gap-4 relative">
-      <div className="py-2 bg-surface-light bg-opacity-50 px-16 backdrop-blur flex-grow-0">
+    <div className="h-full bg-surface bg-opacity-50 flex flex-col justify-start items-stretch relative">
+      <div className="py-2 bg-surface-light bg-opacity-50 px-16 backdrop-blur flex-grow-0 flex-col gap-4 items-center">
         <span className="font-standout text-2xl">
           <Localized>Create campaign</Localized>
         </span>
-        <span className="font-sans text-sm block text-primary-light">
+        <Transition
+          show={step === 0}
+          as="span"
+          className="font-sans text-sm block text-primary-light transform transition"
+          enterFrom="opacity-0 -translate-y-1"
+          enterTo="opacity-100 translate-y-0"
+          leaveFrom="opacity-100 translate-y-0"
+          leaveTo="opacity-0 -translate-y-1"
+          appear={false}
+        >
           <Localized>Step 1: The way you call it</Localized>
-        </span>
+        </Transition>
+        <Transition
+          show={step === 1}
+          as="span"
+          className="font-sans text-sm block text-primary-light transform transition"
+          enterFrom="opacity-0 -translate-y-1"
+          enterTo="opacity-100 translate-y-0"
+          leaveFrom="opacity-100 translate-y-0"
+          leaveTo="opacity-0 -translate-y-1"
+          appear={false}
+        >
+          <Localized>Step 2: The way you see it</Localized>
+        </Transition>
       </div>
-      <form
-        onSubmit={nextStep}
-        className="py-32 bg-surface-light bg-opacity-40 backdrop-blur flex flex-col justify-center items-center gap-6 px-16 my-auto"
+      <Transition
+        as="div"
+        className="bg-surface-light bg-opacity-40 backdrop-blur my-0 py-2 px-16 text-center flex flex-row flex-nowrap justify-center items-center transform transition"
+        show={step > 0}
+        enterFrom="opacity-0 translate-y-8"
+        enterTo="opacity-100 translate-y-0"
+        leaveFrom="opacity-100 translate-y-0"
+        leaveTo="opacity-0 translate-y-8"
+        appear={false}
       >
-        {step > 0 ? (
-          <h2 className="bg-transparent py-2 text-center font-standout font-bold text-lg text-primary-dark">
-            {name}
-          </h2>
-        ) : null}
-        <p className="text-primary-light text-sm font-sans p-4">
+        <span className="text-primary-light font-sans text-sm pr-4 whitespace-nowrap">
+          Campaign name:
+        </span>
+        <span className="text-primary font-standout text-base font-bold whitespace-nowrap">
+          {name}
+        </span>
+      </Transition>
+      <Transition
+        as="form"
+        appear={false}
+        onSubmit={nextStep}
+        className="bg-surface-light bg-opacity-40 backdrop-blur flex flex-col justify-center items-center gap-6 my-auto py-16 transition transform"
+        show={step === 0}
+        enterFrom="opacity-0 -translate-y-8"
+        enterTo="opacity-100 translate-y-0"
+        leaveFrom="opacity-100 translate-y-0"
+        leaveTo="opacity-0 -translate-y-8"
+      >
+        <p className="text-primary text-sm font-sans py-4 px-16 overflow-hidden text-justify">
           <Localized>
             You probably going to reference to this campign somehow. So you have to have a name for
             it. Do not worry, you could change it later for more appropriate one, once you figure it
             out.
           </Localized>
         </p>
-        {step === 0 ? (
-          <input
-            autoFocus={true}
-            className="bg-transparent border-0 border-b-2 border-primary py-2 text-center font-standout text-lg"
-            type="text"
-            placeholder="Enter name here"
-            value={name}
-            onChange={setName}
-          />
-        ) : null}
-        <ButtonErrorIndicator active={!valid}>
-          <button
-            tabIndex={!!name ? 1 : -1}
-            disabled={!name}
-            type="submit"
-            className="
-              disabled:bg-primary-light disabled:bg-opacity-50 disabled:pointer-events-none disabled:from-transparent disabled:to-transparent disabled:py-2 disabled:text-primary
-              bg-primary bg-opacity-70 clip-d20-h text-base py-4 px-16 whitespace-nowrap text-primary-contrast"
-            onClick={nextStep}
-          >
-            {valid ? continueComponent : errorComponent}
-          </button>
-        </ButtonErrorIndicator>
-      </form>
+        <input
+          autoFocus={true}
+          className="bg-transparent border-0 border-b-2 border-primary py-2 px-0 mx-0 text-center font-standout text-lg"
+          type="text"
+          placeholder="Enter name here"
+          value={name}
+          onChange={setName}
+        />
+        <div className={`px-16 bg-opacity-10 ${valid ? "bg-primary" : "bg-error"}`}>
+          <ButtonErrorIndicator active={!valid}>
+            <button
+              tabIndex={!!name ? 1 : -1}
+              disabled={!name}
+              type="submit"
+              className="
+                disabled:bg-primary-light disabled:bg-opacity-50 disabled:pointer-events-none disabled:from-transparent disabled:to-transparent disabled:text-primary
+                bg-primary bg-opacity-70 clip-d20-h text-base py-3 px-16 whitespace-nowrap text-primary-contrast"
+              onClick={nextStep}
+            >
+              {valid ? continueComponent : errorComponent}
+            </button>
+          </ButtonErrorIndicator>
+        </div>
+      </Transition>
     </div>
   )
 }

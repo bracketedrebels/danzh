@@ -15,6 +15,7 @@
     "tw:config:preview": "npx nodemon --watch tailwind.config.js --exec \"npx tailwind-config-viewer --port 8081\""
   },
   "dependencies": {
+    "@headlessui/react": "1.2.0",
     "babel-plugin-relay": "11.0.2",
     "graphql": "15.5.0",
     "graphql-tag": "2.12.4",
