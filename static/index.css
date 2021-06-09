@@ -39,7 +39,7 @@
   }
 
   .clip-d20-keep-proportions-v {
-    clip-path: polygon(50% 0%, 92% 25%, 92% 75%, 50% 100%, 8% 75%, 8% 25%);
+    clip-path: polygon(50% 1%, 92% 25%, 92% 75%, 50% 99%, 8% 75%, 8% 25%);
   }
 
   .clip-d20-h-semi {
@@ -54,14 +54,7 @@
   }
 
   .clip-arrow-left {
-    clip-path: polygon(
-      1rem 0%,
-      2rem 0%,
-      1rem 50%,
-      2rem 100%,
-      1rem 100%,
-      0rem 50%
-    );
+    clip-path: polygon(1rem 0%, 2rem 0%, 1rem 50%, 2rem 100%, 1rem 100%, 0rem 50%);
   }
 
   .clip-arrow-right {

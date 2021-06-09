@@ -25,9 +25,9 @@ export default (
           <div className="text-center flex flex-col items-center flex-grow h-full px-5">
             <div
               className="
-            bg-surface bg-opacity-60 h-full shadow-lg relative
-            before:border-surface-light before:border-y-0 before:border before:border-opacity-30 before:pointer-events-none before:absolute before:inset-0 before:empty-content
-            flex flex-col items-center justify-center max-w-min"
+              bg-surface bg-opacity-60 h-full shadow-lg relative
+              before:border-surface-light before:border-y-0 before:border before:border-opacity-30 before:pointer-events-none before:absolute before:inset-0 before:empty-content
+                flex flex-col items-center justify-center max-w-min"
             >
               <BrowserRouter basename={process.env.ROUTING_BASENAME}>
                 <Suspense fallback={<div className="m-auto">Loading</div>}>

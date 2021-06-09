@@ -1,5 +1,4 @@
 import { Transition } from "@headlessui/react"
-import { noop } from "ramda-adjunct"
 import { ReactNode } from "react"
 
 export default ({ active = false, children = null as ReactNode }) => (
@@ -7,7 +6,7 @@ export default ({ active = false, children = null as ReactNode }) => (
     <Transition show={active}>
       <Transition.Child
         as="div"
-        className="absolute pointer-events-none inset-0 bg-error clip-arrow-left transition transform ease-in-out duration-200 opacity-20"
+        className="absolute pointer-events-none inset-0 bg-error clip-arrow-left transition transform ease-in-out duration-200 bg-opacity-20 opacity-20"
         enterFrom="opacity-0 translate-x-2"
         enterTo="opacity-20 translate-x-0"
         leaveFrom="opacity-20 translate-x-0"
@@ -15,7 +14,7 @@ export default ({ active = false, children = null as ReactNode }) => (
       />
       <Transition.Child
         as="div"
-        className="absolute pointer-events-none inset-0 bg-error clip-arrow-right transition transform ease-in-out duration-200 opacity-20"
+        className="absolute pointer-events-none inset-0 bg-error clip-arrow-right transition transform ease-in-out duration-200 bg-opacity-20 opacity-20"
         enterFrom="opacity-0 -translate-x-2"
         enterTo="opacity-20 translate-x-0"
         leaveFrom="opacity-20 translate-x-0"
