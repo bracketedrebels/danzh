@@ -1,0 +1,157 @@
+# Define a Relay Cursor type:
+# https://relay.dev/graphql/connections.htm#sec-Cursor
+scalar Cursor
+
+type Query {
+  campaigns(size: Int, cursor: Cursor, orderBy: CampaignSortDescriptor): [Campaign!]!
+  campaign(id: ID!): Campaign!
+}
+
+type Mutation {
+  aspectCreateNumeric(init: InputAspectTypeNumeric): Aspect!
+  aspectCreateString(init: InputAspectTypeString): Aspect!
+  aspectCreateSet(init: InputAspectTypeSet): Aspect!
+  aspectUpdate(id: ID!, patch: AspectUpdateMutationArgs): Aspect!
+  aspectRemove(id: ID!): Aspect!
+
+  predicateCreate(id: ID!, init: PrediateCreateMutationArgs!): Predicate!
+  predicateUpdate(id: ID!, patch: PrediateUpdateMutationArgs!): Predicate!
+  predicateRemove(id: ID!): Predicate!
+
+  campaignCreate(init: CampaignCreateMutationArgs!): Campaign!
+  campaignUpdate(id: ID!, patch: CampaignUpdateMutationArgs!): Campaign!
+  campaignRemove(id: ID!): Campaign!
+
+  entityCreate(id: ID!, init: EntityCreateMutationArgs!): Entity!
+  entityUpdate(id: ID!, patch: EntityUpdateMutationArgs!): Entity!
+  entityRemove(id: ID!): Entity!
+
+  # edgeCreate(s: ID!, p: ID!, o: ID!, aspects: [String!]): Edge!
+  # edgeUpdate(s: ID!, p: ID!, o: ID!, aspects: [String!]): Edge!
+  # edgeRemove(s: ID!, p: ID!, o: ID!): Edge!
+}
+
+# ASPECT TYPES
+
+input InputAspectTypeNumeric {
+  min: Float
+  max: Float
+  step: Float
+  description: String
+  name: String!
+}
+
+input InputAspectTypeString {
+  regexp: String
+  required: Boolean
+  description: String
+  name: String!
+}
+
+input InputAspectTypeSet {
+  items: [String!]
+  description: String
+  name: String!
+}
+
+type AspectTypeNumeric {
+  min: Float
+  max: Float
+  step: Float
+}
+
+type AspectTypeString {
+  regexp: String
+}
+
+type AspectTypeSet {
+  items: [String!]
+}
+
+union AspectType = AspectTypeNumeric | AspectTypeString | AspectTypeSet
+
+type Aspect {
+  id: ID!
+  name: String!
+  type: AspectType!
+  description: String
+}
+
+input AspectUpdateMutationArgs {
+  name: String!
+  description: String
+}
+
+# PREDICATE TYPES
+
+type Predicate {
+  id: ID!
+  name: String!
+  description: String!
+}
+
+input PrediateCreateMutationArgs {
+  name: String!
+  description: String
+}
+
+input PrediateUpdateMutationArgs {
+  name: String
+  description: String
+}
+
+# ENTITIY TYPES
+
+type Entity {
+  id: ID!
+  name: String!
+  description: String
+  aspect(id: ID): [Aspect!]!
+}
+
+input EntityCreateMutationArgs {
+  name: String!
+  description: String
+}
+
+input EntityUpdateMutationArgs {
+  name: String
+  description: String
+}
+
+# CAMPAIGN TYPES
+
+type Campaign {
+  id: ID!
+  name: String!
+  description: String
+  logo: String
+  predicate(id: ID): [Predicate!]!
+  entity(id: ID): [Entity!]!
+  aspect(id: ID): [Aspect!]!
+}
+
+input CampaignCreateMutationArgs {
+  name: String!
+  description: String
+  logo: String
+}
+
+input CampaignUpdateMutationArgs {
+  name: String
+  description: String
+}
+
+input CampaignSortDescriptor {
+  field: CampaignOrderField
+  order: OrderDirection!
+}
+
+enum CampaignOrderField {
+  name
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
