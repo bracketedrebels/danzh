@@ -20,20 +20,11 @@ jobs:
       - name: checking out codebase
         uses: actions/checkout@v2
 
-      - name: set npm config list
-        run: npm config list
-
-      - name: setting streamline icons registry
-        run: npm config set '@streamlinehq:registry' https://npm.cloudsmith.io/streamlinehq/streamline-icons/
-
-      - name: setting streamline icons token
-        run: npm config set "//npm.cloudsmith.io/streamlinehq/streamline-icons/:_authToken" ${{ secrets.STREAMLINE_ICONS_TOKEN }}
-
       - name: dependencies installation
         run: npm i
 
       - name: building production bundle
-        run: OAUTH_CLIENT_SECRET_GITHUB=${{ secrets.STREAMLINE_ICONS_TOKEN }} npm run build-prod
+        run: npm run build:prod
 
       - name: deploying to github pages
         uses: crazy-max/ghaction-github-pages@v2.2.0
