@@ -85,7 +85,7 @@ export default () => {
                   type="submit"
                   className="
                   disabled:bg-primary-light disabled:bg-opacity-50 disabled:pointer-events-none disabled:from-transparent disabled:to-transparent disabled:text-primary
-                  bg-primary bg-opacity-70 clip-d20-h text-base py-3 px-16 whitespace-nowrap text-primary-contrast w-full"
+                  bg-primary bg-opacity-70 clip-d20-h text-base py-3 px-16 whitespace-nowrap  w-full "
                   onClick={nextStep}
                 >
                   {valid ? continueComponent : errorComponent}

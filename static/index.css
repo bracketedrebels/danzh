@@ -71,6 +71,6 @@
 
 @layer components {
   * {
-    @apply select-none outline-none leading-0;
+    @apply select-none outline-none;
   }
 }

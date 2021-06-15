@@ -1,12 +1,9 @@
+import CopyPlugin from "copy-webpack-plugin"
+import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
+import handlebars from "handlebars"
+import MiniCssExtractPlugin from "mini-css-extract-plugin"
 import path, { sep } from "path"
 import { append, concat, toPairs } from "ramda"
-
-import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
-import CopyPlugin from "copy-webpack-plugin"
-import postcss from "postcss"
-import handlebars from "handlebars"
-import purgecss from "@fullhuman/postcss-purgecss"
-
 import { DefinePlugin } from "webpack"
 import { config, ContextualEnvironmentDescriptor, envvars, plugin, rule } from "./.webpack/helpers"
 
@@ -64,43 +61,23 @@ const jsLoader = () => () =>
     enforce: "pre" as const,
   })
 
+const cssLoader = () => () =>
+  append({
+    test: /\.css$/i,
+    use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+  })
+
+const assetLoader = () => () =>
+  append({
+    test: /\.(?:png|jpg|gif)$/i,
+    type: "asset/resource",
+  })
+
 const prepareAllTheStaticResources = () => (env: ContextualEnvironmentDescriptor) => {
   const { DEPLOY_BASENAME, DEPLOY_BUNDLENAME } = envvars(env)
   return concat([
     new CopyPlugin({
       patterns: [
-        {
-          from: "static/index.css",
-          to: `index.css`,
-          transform: {
-            transformer: (content: Buffer) =>
-              postcss([
-                require("postcss-import"),
-                require("tailwindcss"),
-                require("autoprefixer"),
-                ...(env === "prod"
-                  ? [
-                      purgecss({
-                        content: ["./src/**/*.tsx", "./static/**/*.html"],
-                        extractors: [
-                          {
-                            extractor: (content: string) =>
-                              content.match(/[A-z0-9-:\/]+/g)?.map((v) => v.toString()) || [],
-                            extensions: ["tsx", "html"],
-                          },
-                        ],
-                      }),
-                    ]
-                  : []),
-              ])
-                .process(content, {
-                  from: `static${sep}index.css`,
-                  to: `index.css`,
-                })
-                .then((v) => v.css),
-            cache: true,
-          },
-        },
         {
           from: `static${sep}index.html`,
           to: `index.html`,
@@ -113,24 +90,17 @@ const prepareAllTheStaticResources = () => (env: ContextualEnvironmentDescriptor
             cache: true,
           } as any,
         },
-        ...(env === "prod"
-          ? [
-              {
-                from: `static${sep}index.html`,
-                to: `404.html`,
-                transform: (content: Buffer) =>
-                  handlebars.compile(content.toString())({
-                    basename: DEPLOY_BASENAME,
-                    bundlename: DEPLOY_BUNDLENAME,
-                  }),
-              },
-            ]
-          : []),
-        { from: "static", to: "." },
       ],
     }),
   ])
 }
+
+const miniCssExtractPlugin = () => () =>
+  concat([
+    new MiniCssExtractPlugin({
+      filename: "index.css",
+    }),
+  ])
 
 /* actual configuration */
 
@@ -138,15 +108,20 @@ export default config(
   plugin(forceTypeChecking()),
   plugin(defineRuntimeEnvironment()),
   plugin(prepareAllTheStaticResources()),
+  plugin(miniCssExtractPlugin()),
   rule(tsxLoader()),
   rule(workerLoader()),
-  rule(jsLoader())
+  rule(jsLoader()),
+  rule(cssLoader()),
+  rule(assetLoader())
 )((env) => ({
-  entry: ["./src/index.tsx"],
+  entry: ["./src/index.tsx", "./static/index.css"],
   devServer: {
     historyApiFallback: true,
     compress: true,
     hot: true,
+    contentBase: path.resolve(__dirname, "dist"),
+    watchContentBase: true,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
