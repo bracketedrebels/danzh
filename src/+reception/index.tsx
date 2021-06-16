@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { useHistory } from "react-router"
-import SeparatorBlock from "../helpers/SeparatorBlock"
+import SeparatorBlock from "../helpers/components/SeparatorBlock"
 
 export default () => {
   const { push } = useHistory()

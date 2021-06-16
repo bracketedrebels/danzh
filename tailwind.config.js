@@ -13,13 +13,16 @@ module.exports = {
         "vp-3/4": "75vw",
         "vp-full": "100vw",
       },
+      fontFamily: {
+        regular: ["Inter", "sans"],
+        standout: ["Jost", "sans-serif"],
+      },
     },
   },
-  variants: {
-    extend: {},
-  },
-  corePlugins: {
-    preflight: false,
-  },
-  plugins: [],
+  plugins: [
+    require("tailwindcss-pseudo-elements")({
+      contentUtilities: true,
+      emptyContent: true,
+    }),
+  ],
 }

@@ -24,8 +24,8 @@ export default () => {
   useEffect(() => void (ready && push("/reception")), [ready])
 
   return (
-    <div className="backdrop-blur h-full px-16 bg-surface bg-opacity-50 flex flex-col justify-center">
-      <div className="font-standout font-bold text-5xl sm:text-6xl 2xl:text-7xl filter-drop-shadow-md text-secondary text-opacity-70 px-5">
+    <div className="backdrop-filter backdrop-blur-md h-full px-16 flex flex-col justify-center bg-white bg-opacity-20">
+      <div className="font-standout font-bold text-5xl sm:text-6xl 2xl:text-7xl filter drop-shadow-2xl text-secondary text-opacity-70 px-5">
         DANZH
         <div className="font-sans font-normal text-base text-primary">State Management Tool</div>
       </div>
