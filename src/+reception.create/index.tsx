@@ -26,15 +26,15 @@ export default () => {
   useEffect(() => setValid(!!name), [name])
 
   return (
-    <div className="h-full bg-surface bg-opacity-50 flex flex-col justify-start items-stretch relative w-vp-1/2">
-      <div className="py-4 bg-surface-light bg-opacity-50 px-16 backdrop-blur flex-grow-0 flex-col gap-4 items-center">
+    <div className="h-full flex flex-col justify-start items-stretch relative w-vp-1/2">
+      <div className="py-4 px-16 backdrop-filter backdrop-blur-sm flex-grow-0 flex-col gap-4 items-center">
         <span className="font-standout text-2xl">
           <Localized>Create campaign</Localized>
         </span>
       </div>
       <Transition
         as="div"
-        className="bg-surface-light bg-opacity-40 backdrop-blur my-0 py-4 px-16 text-center flex flex-row flex-nowrap justify-center items-center transform transition mt-2"
+        className="backdrop-filter backdrop-blur my-0 py-4 px-16 text-center flex flex-row flex-nowrap justify-center items-center transform transition mt-2"
         show={step > 0}
         enterFrom="opacity-0 translate-y-8"
         enterTo="opacity-100 translate-y-0"
@@ -42,12 +42,8 @@ export default () => {
         leaveTo="opacity-0 translate-y-8"
         appear={false}
       >
-        <span className="text-primary-light font-sans text-sm pr-4 whitespace-nowrap">
-          Campaign name:
-        </span>
-        <span className="text-primary font-standout text-base font-bold whitespace-nowrap">
-          {name}
-        </span>
+        <span className="font-sans text-sm pr-4 whitespace-nowrap">Campaign name:</span>
+        <span className="font-standout text-base font-bold whitespace-nowrap">{name}</span>
       </Transition>
       <div className="relative my-auto overflow-visible h-0">
         <Transition
@@ -61,8 +57,8 @@ export default () => {
           leaveFrom="opacity-100 translate-y-0"
           leaveTo={movingForward ? "opacity-0 -translate-y-8" : "opacity-0 translate-y-8"}
         >
-          <div className="transform -translate-y-1/2 bg-surface-light bg-opacity-40 backdrop-blur flex flex-col justify-center items-center gap-6 py-16">
-            <p className="text-primary text-sm font-sans py-4 px-16 overflow-hidden text-justify max-w-prose">
+          <div className="transform -translate-y-1/2 backdrop-filter backdrop-blur flex flex-col justify-center items-center gap-6 py-16">
+            <p className="text-sm font-regular py-4 px-16 overflow-hidden text-justify max-w-prose">
               <Localized>
                 You probably going to reference to this campign somehow. So you have to have a name
                 for it. Do not worry, you could change it later for more appropriate one, once you

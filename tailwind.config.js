@@ -17,6 +17,11 @@ module.exports = {
         regular: ["Inter", "sans"],
         standout: ["Jost", "sans-serif"],
       },
+      fontWeight: {
+        bold: 700,
+        normal: 300,
+        DEFAULT: 300,
+      },
     },
   },
   plugins: [

@@ -24,14 +24,14 @@ export default () => {
   useEffect(() => void (ready && push("/reception")), [ready])
 
   return (
-    <div className="backdrop-filter backdrop-blur-md h-full px-16 flex flex-col justify-center bg-white bg-opacity-20">
-      <div className="font-standout font-bold text-5xl sm:text-6xl 2xl:text-7xl filter drop-shadow-2xl text-secondary text-opacity-70 px-5">
+    <div className="backdrop-filter backdrop-blur-sm h-full px-16 flex flex-col justify-center bg-white bg-opacity-20">
+      <div className="font-standout font-bold text-5xl sm:text-6xl 2xl:text-7xl text-gray-700 px-5">
         DANZH
-        <div className="font-sans font-normal text-base text-primary">State Management Tool</div>
+        <div className="font-sans font-normal text-base">State Management Tool</div>
       </div>
       <div className="mt-10 w-full flex flex-col items-center">
         <button
-          className="clip-d20-keep-proportions-v flex items-center justify-center w-20 h-20"
+          className="clip-d20-keep-proportions-v flex items-center justify-center w-20 h-20 text-gray-100 bg-gray-700"
           onClick={onDiscordClick}
           disabled={signingIn}
         >
